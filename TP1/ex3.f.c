@@ -2,28 +2,29 @@
 #include <limits.h>
 
 int main() {
-  int nbr, i, f = 1.0;
+  int nbr, i = 2, f = 1;
  
-  printf("Entrez un nombre pour calculer sa factorielle : \n");
+  printf("Entrez un nombre pour calculer sa factorielle : ");
   scanf("%d", &nbr);
 
   if (nbr < 0) {
-        printf("La factorielle n'est définie que pour les nombres entiers positifs.\n");
-    } else {
-        int i = 2;
-        while (i <= nbr && f <= INT_MAX / i) {
-            f *= i;
-            i++;
-        }
+    printf("La factorielle n'est définie que pour les nombres entiers positifs.\n");
 
-        if (f <= INT_MAX) {  // Vérification finale du résultat
-            printf("La factorielle de %d est %d\n", nbr, f);
-        } else {
-            printf("Erreur : Le calcul de la factorielle dépasse les capacités du type int.\n");
-        }
+  } else {
+    while (i <= nbr && f <= INT_MAX / i) {
+      f *= i;
+      i++;
     }
 
-  printf("La valeur de INT_MAX est : %d\n", INT_MAX);
- 
+    if (i > nbr) {
+      printf("%d! = %d\n", nbr, f);
+
+    } else {
+      printf("Erreur : Le calcul de la factorielle dépasse les capacités du type int.\n");
+    }
+    
+  }
+
+  printf("\nLa valeur de INT_MAX est : %d\n", INT_MAX);
   return 0;
 }

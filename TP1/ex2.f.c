@@ -2,11 +2,11 @@
 #include <stdio.h>
 
 int main() {
-    int a,b, quotient, reste;
+    int a, b, quotient, reste;
     printf("Entrez deux entiers positifs : \n");
     scanf("%d %d",&a, &b);
 
-    while (b==0) {
+    while (b == 0) {
         printf("b ne peut pas être égal à 0. Entrez une nouvelle valeur pour b : \n");
         scanf("%d", &b);
     }
@@ -14,7 +14,7 @@ int main() {
     quotient = 0;
     reste = a;
 
-    while(reste >= b) {
+    while (reste >= b) {
         reste -= b;
         quotient++;
     }

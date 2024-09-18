@@ -2,7 +2,7 @@
 #include <limits.h>
 
 int main() {
-  int nbr, i, f = 1.0;
+  int nbr, i = 2, f = 1.0;
  
   printf("Entrez un nombre pour calculer sa factorielle : \n");
   scanf("%d", &nbr);
@@ -10,7 +10,6 @@ int main() {
   if (nbr < 0) {
         printf("La factorielle n'est définie que pour les nombres entiers positifs.\n");
     } else {
-        int i;
         while (i <= nbr) {
             // Vérifier si fact dépasse les capacités du type int
             if (f > INT_MAX / i) {
@@ -26,7 +25,7 @@ int main() {
         }
     }
 
-  printf("La valeur de INT_MAX est : %d\n", INT_MAX);
+  printf("\nLa valeur de INT_MAX est : %d\n", INT_MAX);
  
   return 0;
 }
