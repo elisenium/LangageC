@@ -168,6 +168,7 @@ int main(int argc, char const *argv[])
     case 0:
       //0. FREE DB AND QUIT
       // TODO
+      free_db(db, &nbr_tickets);
       
       printf("Bye bye!\n\n");
       break;
