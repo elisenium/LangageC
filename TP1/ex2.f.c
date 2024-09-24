@@ -11,6 +11,12 @@ int main() {
         scanf("%d", &b);
     }
 
+    if (a < b) {
+        int temp = a;
+        a = b;
+        b = temp;
+    }
+
     quotient = 0;
     reste = a;
 
