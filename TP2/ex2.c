@@ -1,30 +1,27 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #define MAXDIM 9
 
 int main() {
+  int nbLignes, nbColonnes;
+  
+  scanf("%d %d", &nbLignes, &nbColonnes);
+  
+  char tab[MAXDIM][MAXDIM];
 
-    printf("Entrez le nombre de lignes : \n");
-    int m;
-    scanf("%d",&m);
-    printf("Entrez le nombre de colonnes : \n");
-    int n;
-    scanf("%d",&n);
+  char c = 'A';
+  for (int i = 0; i < nbLignes; i++) {
+  
+    for (int j = 0; j < nbColonnes; j++) {
+      tab[i][j] = c;
+      printf("%c en ligne %d et colonne %d\n", tab[i][j], i, j);
 
-    
-    char lettre = 'A';
-    char tab[MAXDIM][MAXDIM];
-    for (int i = 0; i < m; ++i) {
-        for (int j = 0; j < n; ++j) {
-            tab[i][j] = lettre;
-            printf("%c en ligne %d et colonne %d\n", tab[i][j], i, j);
-            lettre++;
-
-            if (lettre > 'Z') {
-                lettre = 'A';
-            }
-        }
+      if (c == 'Z')
+        c = 'A';
+      else
+        c++;
     }
-    exit(0);
+  }
+  return 0;
 }

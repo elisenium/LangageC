@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 
 #define MAXDIM 9
 #define NB_LETTRES_ALPHABET 26
@@ -9,6 +10,8 @@ int main() {
 
   int nbLignes, nbColonnes;
   scanf("%d %d", &nbLignes, &nbColonnes);
+
+  srand(time(NULL)); //Définition du générateur de nombre aléatoires par rapport au temps
 
   for (int i = 0; i < nbLignes; i++) {
     for (int j = 0; j < nbColonnes; j++) {

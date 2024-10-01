@@ -1,54 +1,26 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #define MAXDIM 9
 
 int main() {
-    int m, n;
-    printf("Entrez le nombre de lignes : ");
-    scanf("%d",&m);
-    printf("Entrez le nombre de colonnes : ");
-    scanf("%d",&n);
+  int nbLignes, nbColonnes;
+  
+  scanf("%d %d", &nbLignes, &nbColonnes);
+  
+  char tab[MAXDIM][MAXDIM];
 
-    char tab[MAXDIM][MAXDIM], tab2[MAXDIM][MAXDIM];
-    char lettre = 'A';
-    
-    printf("Table de caractères \n");
-    for (int i = 0; i < m; ++i) {
-        for (int j = 0; j < n; ++j) {
-            tab[i][j] = lettre;
-            //printf("%c en ligne %d et colonne %d\n", lettre, i, j);
-            lettre++;
+  char min = 'A';
+  char max = 'Z';
 
-            if (lettre > 'Z') {
-                lettre = 'A';
-            }
-        }
+  for (int i = 0; i < nbLignes; i++) {
+  
+    for (int j = 0; j < nbColonnes; j++) {
+      char c = 'A' + (int)(rand()/(RAND_MAX+1.0)*(max-min+1));
+
+      tab[i][j] = c;
+      printf("%c en ligne %d et colonne %d\n", tab[i][j], i, j);
     }
-    
-    printf("\n");
-    for (int i=0; i<m; i++) {
-        for (int j=0; j<n; j++)
-            printf("%c  ", tab[i][j]);
-        printf("\n");
-    }
-    printf("\n");
-    
-    printf("\nTable de caractères random\n");
-    for (int i = 0; i < m; ++i) {
-        for (int j = 0; j < n; ++j) {
-            // Utiliser la formule générique pour obtenir une lettre aléatoire entre 'A' et 'Z'.
-            tab2[i][j] = 'A' + (int)(rand() / (RAND_MAX + 1.0) *('Z'-'A'+1));
-            char c = tab2[i][j];
-            //printf("%c en ligne %d et colonne %d\n", tab2[i][j], i, j);
-        }
-    }
-    
-    printf("\n");
-    for (int i=0; i<m; i++) {
-        for (int j=0; j<n; j++)
-            printf("%c  ", tab2[i][j]);
-        printf("\n");
-    }
-    printf("\n");
+  }
+  return 0;
 }
