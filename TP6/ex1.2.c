@@ -1,25 +1,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <math.h>
 
-/**
- * PRE : n: nombre entier positif
- * RES : vrai si n est premier, faux sinon
- */
-bool isPrime (int n) {
+/*
+* PRE : n : nombre entier positif
+* RES : vrai si n est un premier ; faux sinon
+*/
 
-    bool isPrimeNumber = true;
-    bool isNotPrimeNumber = false;
-
-    if (n%n == 0 && n%1 == n)
-    {
-        printf("%d est un nombre premier.\n", n);
-        return isPrimeNumber;
+bool isPrime(int n) {
+    if (n < 2) {
+        //printf("%d n'est pas un nombre premier.\n", n);
+        return false;
     }
-    else {
-      printf("%d n'est pas un nombre premier.\n", n);
-      return isNotPrimeNumber; 
+    
+    for (int i = 2; i <= sqrt(n); i++) {
+        if (i != n && n %i == 0) {
+            //printf("%d n'est pas un nombre premier.\n", n);
+            return false;
+        }
     }
+    //printf("%d est un nombre premier.\n", n);
+    return true;
 }
 
 /**
@@ -29,30 +31,39 @@ bool isPrime (int n) {
  *       NULL si une erreur est survenue (sz est mis à 0)
  */
 
-//Vérifier avec les solutions
-int* prime_numbers (int n, int sz*) {
+
+int* prime_numbers (int n, int* sz) {
     *sz = 0;
-    int *primes = malloc(n*sizeof(int));
-    if (primes == NULL) {
+    int *prime_numbers = (int*)malloc(n*sizeof(int));
+    if (prime_numbers == NULL) {
         return NULL;
     }
 
-    for (int i = 2; i < n; ++i)
-    {
-        if (isPrime(i) == true)
-        {
-            primes[*sz] = i;
+    for (int i = 2; i <= n; ++i) {
+        if (isPrime(i) == true) {
+            prime_numbers[*sz] = i;
             (*sz)++;
         }
     }
-    primes = realloc(primes, *sz * sizeof(int))
-    return primes
+
+    prime_numbers = realloc(prime_numbers, (*sz) * sizeof(int));
+    /*
+    printf("Nombres premiers plus petits que %d :\n", n);
+    for (int i = 0; i < *sz; ++i) {
+        printf("%d\n", prime_numbers[i]);
+    }
+    printf("TAILLE : %d\n", *sz);
+    */
+
+    return prime_numbers;
 }
 
-int main ()
-{
+int main () {
     int max = 100;
     int taille;
-    int* t = prime_numbers(100, &taille);
+    int* t = prime_numbers(max, &taille);
+    
+    free(t);
+
     exit(0);
 }
