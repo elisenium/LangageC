@@ -4,12 +4,13 @@
 int main() {
   int codeASCII, nbr, i, f, validInput;
 
-  //printf("Entrez un nombre pour calculer sa factorielle (compris entre 0 et 9) : ");
   while (1) {
     validInput = 1;
     nbr = 0;
     int isFirstChar = 1;
     int inputLength = 0;
+
+    printf("Entrez un nombre pour calculer sa factorielle (compris entre 0 et 99) : ");
 
     while ((codeASCII = getchar()) != '\n' && codeASCII != EOF) {
       inputLength++;
@@ -35,15 +36,15 @@ int main() {
 
     if (inputLength == 0) {
       printf("Error: empty line\n");
-
-    } else if (inputLength > 1) {
+      
+    } else if (inputLength > 2) {
       printf("Error: too many characters\n");
 
-    } else if (!validInput || nbr < 0 || nbr > 9) {
-      printf("Error: invalid character\n");
+    } else if (!validInput || nbr < 0 || nbr > 99) {
+      printf("Error: invalid character or out of limits characters\n");
 
     } else {
-      //printf("\ncaractere lu '%d' - code ascii %d\n", nbr, nbr + '0');
+      
       i = 2;
       f = 1;
 
@@ -54,11 +55,10 @@ int main() {
 
       if (i > nbr) {
         printf("%d! = %d\n", nbr, f);
+      } else {
+        printf("Error: capacity limit reached\n");
       }
-    } else {
-      
     }
-    //printf("Entrez un nombre pour calculer sa factorielle (compris entre 0 et 9) : ");
   }
   return 0;
 }

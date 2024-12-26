@@ -6,9 +6,9 @@
 int main() {
     int m, n, max, min;
     printf("Entrez le nombre de lignes : ");
-    scanf("%d",&m);
+    scanf("%d", &m);
     printf("Entrez le nombre de colonnes : ");
-    scanf("%d",&n);
+    scanf("%d", &n);
 
     char tab[MAXDIM][MAXDIM], tab2[MAXDIM][MAXDIM];
     char lettre = 'A';
@@ -27,8 +27,8 @@ int main() {
     }
     
     printf("\n");
-    for (int i=0; i<m; i++) {
-        for (int j=0; j<n; j++)
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++)
             printf("%c  ", tab[i][j]);
         printf("\n");
     }
@@ -45,8 +45,8 @@ int main() {
     }
     
     printf("\n");
-    for (int i=0; i<m; i++) {
-        for (int j=0; j<n; j++)
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++)
             printf("%c  ", tab2[i][j]);
         printf("\n");
     }
