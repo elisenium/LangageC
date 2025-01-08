@@ -15,8 +15,7 @@
 #define MAX_LENGTH    50 // maximal number of characters for ticket information
 #define DATE_LENGTH   8  // fixed length of date format (i.e. "20190628")
 
-// TODO
-#define DB_SIZE     100
+#define MAX_TICKETS 100
 
 
 /** DECLARATION OF FUNCTIONS **/
@@ -40,17 +39,17 @@ int main(int argc, char const *argv[])
 {
   // main variables
   int index = -1;
-  // TODO declare here: the db, the number of tickets 
-  char** db[DB_SIZE];
+  // declare here: the db, the number of tickets
+  char** db[MAX_TICKETS];
   int nbr_tickets = 0;
 
   // buffers to read from stdin
-  // TODO declare here all the buffers to record data from stdin
+  // declare here all the buffers to record data from stdin
+  char userID[MAX_LENGTH+2];
   char from[MAX_LENGTH+2];
   char to[MAX_LENGTH+2];
-  char userID[MAX_LENGTH+2];
   char date[DATE_LENGTH+2];
-
+  
   // main interactive loop
   int user_choice = -1;
   while (user_choice != 0) {
@@ -60,45 +59,35 @@ int main(int argc, char const *argv[])
       //1. ADD A TICKET IN DB
       //1.a collect ticket information from user
       printf("What is the user ID ?\n");
-      // TODO
       if (!get_data_from_user(userID, MAX_LENGTH+2)) {
-        perror("Unable to read data from stdin");
+        perror("Unable to read data from stdin.");
         exit(EXIT_FAILURE);
       }
 
       printf("What is the departure train station ?\n");
-      // TODO
       if (!get_data_from_user(from, MAX_LENGTH+2)) {
-        perror("Unable to read data from stdin");
+        perror("Unable to read data from stdin.");
         exit(EXIT_FAILURE);
       }
 
       printf("What is the destination train station ?\n");
-      // TODO
       if (!get_data_from_user(to, MAX_LENGTH+2)) {
-        perror("Unable to read data from stdin");
+        perror("Unable to read data from stdin.");
         exit(EXIT_FAILURE);
       }
 
       printf("What is the date ?\n");
-      // TODO
       if (!get_data_from_user(date, DATE_LENGTH+2)) {
-        perror("Unable to read data from stdin");
+        perror("Unable to read data from stdin.");
         exit(EXIT_FAILURE);
       }
 
       //1.b create ticket with collected information
-      // TODO
       char** ticket = create_ticket(userID, from, to, date);
-      if (ticket == NULL) {
-        perror("Error while creating ticket: malloc error");
-        exit(EXIT_FAILURE);
-      }
 
       //1.c add ticket to DB
-      // TODO
-      if (!add_ticket_to_db(db, DB_SIZE, &nbr_tickets, ticket)) {
-        perror("Error while adding new ticket: malloc error");
+      if (!add_ticket_to_db(db, MAX_TICKETS, &nbr_tickets, ticket)) {
+        perror("Unable to add ticket to the db.");
         exit(EXIT_FAILURE);
       }
       
@@ -109,25 +98,22 @@ int main(int argc, char const *argv[])
       //2. MODIFY A TICKET
       //2.a collect user ID and date of ticket
       printf("What is the user id ?\n");
-      // TODO
       if (!get_data_from_user(userID, MAX_LENGTH+2)) {
-        perror("Unable to read data from stdin");
+        perror("Unable to read data from stdin.");
         exit(EXIT_FAILURE);
       }
       
       printf("What is the date?\n");
-      // TODO
       if (!get_data_from_user(date, DATE_LENGTH+2)) {
-        perror("Unable to read data from stdin");
+        perror("Unable to read data from stdin.");
         exit(EXIT_FAILURE);
       }
 
       //2.b find ticket in DB
-      // TODO
       index = find_ticket(db, nbr_tickets, userID, date);
       
       if (index == -1) {
-        // TODO print error message
+        // print error message
         printf("No ticket found with userID '%s' and date '%s'\n", userID, date);
         break;
       }
@@ -135,23 +121,21 @@ int main(int argc, char const *argv[])
       //2.c collect new ticket information
       printf("Ready to modify ticket at index %d\n", index);
       printf("Modify the FROM station ? (press Enter with empty response to unchange)\n");
-      // TODO
-      if (!get_data_from_user(from, MAX_LENGTH+2)) {
-        perror("Unable to read data from stdin");
-        exit(EXIT_FAILURE);
-      }
-
-      printf("Modify the TO station ? (press Enter with empty response to unchange)\n");
-      // TODO
-      if (!get_data_from_user(to, MAX_LENGTH+2)) {
-        perror("Unable to read data from stdin");
-        exit(EXIT_FAILURE);
-      }
       
+      if (!get_data_from_user(from, MAX_LENGTH+2)) {
+        perror("Unable to read data from stdin.");
+        exit(EXIT_FAILURE);
+      }
+      printf("Modify the TO station ? (press Enter with empty response to unchange)\n");
+      
+      if (!get_data_from_user(to, MAX_LENGTH+2)) {
+        perror("Unable to read data from stdin.");
+        exit(EXIT_FAILURE);
+      }
       //2.d update ticket information in DB
-      // TODO
+      
       if (!update_ticket(db[index], from, to)) {
-        perror("Unable to read data from stdin");
+        perror("Unable to update data in the database.");
         exit(EXIT_FAILURE);
       }
 
@@ -160,14 +144,14 @@ int main(int argc, char const *argv[])
 
     case 3:
       //3. PRINT ALL TICKETS FROM DB
-      // TODO
+      
       print_all_tickets(db, nbr_tickets);
       
       break;
       
     case 0:
       //0. FREE DB AND QUIT
-      // TODO
+      
       free_db(db, &nbr_tickets);
       
       printf("Bye bye!\n\n");
@@ -190,14 +174,14 @@ int main(int argc, char const *argv[])
  * RES: returns true in case of success, false otherwise
  */
 bool get_data_from_user(char* buffer, int sz){
-  // TODO
+
   if (fgets(buffer, sz, stdin) == NULL) {
-    return false;
+     return false;
   }
+
   if (buffer[strlen(buffer)-1] == '\n') {
     buffer[strlen(buffer)-1] = '\0';
   }
-  
   return true;
 }
 
@@ -210,35 +194,22 @@ bool get_data_from_user(char* buffer, int sz){
  */
 char** create_ticket(char* userID, char* from, char* to, char* date) {
   // dynamic allocations and checks
-  // TODO
-  char** new_ticket = (char**) malloc(NBR_INFOS * sizeof(char*));
-  if (new_ticket == NULL){
-    return NULL;
-  }
-
-  new_ticket[USERID_IDX] = (char*) malloc((strlen(userID) + 1) * sizeof(char));
-  if (new_ticket[USERID_IDX] == NULL) {
-    return NULL;
-  }
-
-  new_ticket[FROM_IDX] = (char*) malloc((strlen(from) + 1) * sizeof(char));
-  if (new_ticket[FROM_IDX] == NULL) {
-    return NULL;
-  }
-
-  new_ticket[TO_IDX] = (char*) malloc((strlen(to) + 1) * sizeof(char));
-  if (new_ticket[TO_IDX] == NULL) {
-    return NULL;
-  }
-
-  new_ticket[DATE_IDX] = (char*) malloc((strlen(date) + 1) * sizeof(char));
-  if (new_ticket[DATE_IDX] == NULL) {
-    return NULL;
-  }
-
+  char** new_ticket = (char**)malloc(NBR_INFOS*sizeof(char*));
+  if (new_ticket == NULL) return NULL;
+  
+  new_ticket[USERID_IDX] = (char*)malloc((strlen(userID)+1)*sizeof(char));
+  if (new_ticket[USERID_IDX] == NULL) return NULL;
+  
+  new_ticket[FROM_IDX] = (char*)malloc((strlen(from)+1)*sizeof(char));
+  if (new_ticket[FROM_IDX] == NULL) return NULL;
+  
+  new_ticket[TO_IDX] = (char*)malloc((strlen(to)+1)*sizeof(char));
+  if (new_ticket[TO_IDX] == NULL) return NULL;
+  
+  new_ticket[DATE_IDX] = (char*)malloc((strlen(date)+1)*sizeof(char));
+  if (new_ticket[DATE_IDX] == NULL) return NULL;
 
   // make the informations copies
-  // TODO
   strcpy(new_ticket[USERID_IDX], userID);
   strcpy(new_ticket[FROM_IDX], from);
   strcpy(new_ticket[TO_IDX], to);
@@ -256,12 +227,11 @@ char** create_ticket(char* userID, char* from, char* to, char* date) {
  */
 bool add_ticket_to_db(char*** db, int db_sz, int* nbr_tickets, char** ticket) {
   // check if bd is not full
-  // TODO
-  if (*nbr_tickets == db_sz) {
+  if (*nbr_tickets >= db_sz) {
     return false;
   }
+  
   // add the new ticket
-  // TODO
   db[*nbr_tickets] = ticket;
   (*nbr_tickets)++;
   
@@ -275,10 +245,9 @@ bool add_ticket_to_db(char*** db, int db_sz, int* nbr_tickets, char** ticket) {
  *      -1 if no match is found
  */
 int find_ticket(char*** db, int nbr_tikets, char* userID, char* date) {
-  // TODO
-  for (int i = 0; i < nbr_tikets; ++i) {
+  for (int i = 0; i < nbr_tikets; i++) {
     if (strcmp(db[i][USERID_IDX], userID) == 0 && strcmp(db[i][DATE_IDX], date) == 0) {
-      return i;
+        return i;
     }
   }
   
@@ -295,21 +264,19 @@ int find_ticket(char*** db, int nbr_tikets, char* userID, char* date) {
  * RES: returns true in case of success, false otherwise
  */
 bool update_ticket(char** ticket, char* from, char* to) {
-  // TODO
+
   if (strlen(from) > 0) {
-    ticket[FROM_IDX] = (char*) realloc(ticket[FROM_IDX], (strlen(from) + 1) * sizeof(char));
-    if (ticket[FROM_IDX] == NULL) {
-      return false;
-    }
-  }
-  
-  if (strlen(to) > 0) {
-    ticket[TO_IDX] = (char*) realloc(ticket[TO_IDX], (strlen(to) + 1) * sizeof(char));
-    if (ticket[TO_IDX] == NULL) {
-      return false;
-    }
+    ticket[FROM_IDX] = (char*)realloc(ticket[FROM_IDX], (strlen(from)+1)*sizeof(char));
+    if (ticket[FROM_IDX] == NULL) return false;
+    strcpy(ticket[FROM_IDX], from);
   }
 
+  if (strlen(to) > 0) {
+    ticket[TO_IDX] = (char*)realloc(ticket[TO_IDX], (strlen(to)+1)*sizeof(char));
+    if (ticket[TO_IDX] == NULL) return false;
+    strcpy(ticket[TO_IDX], to);
+  }
+  
   return true;
 }
 
@@ -318,13 +285,14 @@ bool update_ticket(char** ticket, char* from, char* to) {
  * POST: all the tickets and their data are freed ; nbr_tickets is set to 0
  */
 void free_db(char*** db, int* nbr_tickets){
-  // TODO
-  for (int i = 0; i < *nbr_tickets; ++i) {
-    for (int j = 0; j < NBR_INFOS; ++i) {
-      free(db[i][j]);
+  for (int i = 0; i < *nbr_tickets; i++) {
+    for (int j = 0; j < NBR_INFOS; j++) {
+        free(db[i][j]);
     }
     free(db[i]);
   }
+  *nbr_tickets = 0;
+  
 }
 
 /**
@@ -333,8 +301,8 @@ void free_db(char*** db, int* nbr_tickets){
  */
 void print_all_tickets(char*** db, int nbr_tickets){
   printf("Database of the tickets:\n");
-  // TODO
-  for (int i = 0; i < nbr_tickets; ++i) {
+  
+  for (int i = 0; i < nbr_tickets; i++) {
     print_ticket(db[i]);
   }
   
@@ -369,7 +337,8 @@ int menu() {
   printf("\n" \
     "1. Add a ticket\n" \
     "2. Modify a ticket\n" \
-    "3. Print all tickets\n" \
+    "3. Cancel a ticket\n" \
+    "4. Print all tickets\n" \
     "0. Quit\n");
   colorOn(1,CYAN_TEXT);
   printf("What is your choice ? ");
