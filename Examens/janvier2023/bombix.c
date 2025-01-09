@@ -1,10 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include <string.h>
 #include <time.h>
 
-#define TAILLE_PSEUDO 30
 
 // Déclaration des fonctions fournies
 void initPlateau(char** p, int n, int m, int nbRochers);
@@ -19,9 +17,9 @@ bool supprimerColonne(char*** p, int n, int *m, int colonne);
 // TODO: signature de supprimerLigne
 
 
-//*********************
-// PROGRAMME PRINCIPAL
-//*********************
+//*********************//
+// PROGRAMME PRINCIPAL //
+//*********************//
 
 int main (int argc, char* argv[]) {
     // Vérification des arguments du programme
@@ -31,53 +29,30 @@ int main (int argc, char* argv[]) {
     }
     
     // Récupération des dimensions du plateau de jeu
-    int nl = atoi(argv[1]);
-    int nc = atoi(argv[2]);
+    // TODO
     
     // Lecture du pseudonyme du joueur
     // TODO
-    char pseudo[TAILLE_PSEUDO];
-    printf("Entrez votre pseudo: ");
-    fgets(pseudo, TAILLE_PSEUDO, stdin);
-    pseudo[strlen(pseudo)-1] = '\0';
     
     // Création du plateau de jeu
     // TODO (appeler creerPlateau)
-    char** plateau = creerPlateau(nl, nc);
-    if (plateau == NULL) {
-        printf("Erreur d'allocation mémoire!\n");
-        exit(1);
-    }
     
     // Initialisation du plateau en plaçant nl*nc/3-1 rochers aléatoires 'R'
     srand((unsigned) time(NULL));
     // TODO (appeler initPlateau)
-    int nR = nl*nc/3-1;
-    initPlateau(plateau, nl, nc, nR);
+        
     // Boucle de jeu
     // TODO
-    int nB = 0;
-    int nDestructions = 0;
-    int l, c;
-    while (nR != 0 && nR < nl*nc && nl>2 && nc>2) {
+    
+    while ( /* TODO */ ) {
         // Placement d'un rocher aléatoire 'R'
         printf("Ajout d'un rocher sur le plateau:\n");
         // TODO (appeler placerUnRocher)
-        placerUnRocher(plateau, nl, nc);
-        nR++;
-        afficherPlateau(plateau, nl, nc);
+
         // Saisie des coordonnées de la bombe
         printf("Entrez les coordonnées de votre bombe: ");
         // TODO
-        if (scanf("%d%d",&l,&c) == EOF) {
-            break;
-        }
-        l--;
-        c--;
-         if (plateau[l][c] == 'R') {
-            printf("La case est occupée par un rocher\n");
-            continue;
-        }
+        
         // Placement de la bombe 'X'
         // TODO
                 
@@ -104,22 +79,7 @@ int main (int argc, char* argv[]) {
  *      (le tableau renvoyé est dynamique et devra être libéré)
  */
 char** creerPlateau (int n, int m) {
-    char** p = malloc(n * sizeof(char*));
-    if (p == NULL) {
-        return NULL;
-    }
-
-    for (int i = 0; i < n; ++i) {
-        p[i] = malloc(m*sizeof(char));
-        if (p[i] == NULL) {
-            return NULL;
-        }
-
-        for (int j = 0; j < m; ++j) {
-            p[i][j] = ' ';
-        }
-    }
-    return p;
+    // TODO
 }
 
 /**
@@ -129,15 +89,7 @@ char** creerPlateau (int n, int m) {
  *      par un rocher 'R'
  */
 int nbRochers (char** p, int n, int m) {
-    int nbrR = 0;
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < m; ++j) {
-            if (p[i][j] == 'R') {
-                nbrR++;
-            }
-        }
-    }
-    return nbrR;
+    // TODO
 }
 
 /**
@@ -148,13 +100,6 @@ int nbRochers (char** p, int n, int m) {
  */
 void placerUnRocher (char** p, int n, int m) {
     // TODO (utilisez la fonction fournie: entierAleatoire)
-    int l,c;
-    do {
-        l = entierAleatoire(0, n-1);
-        c = entierAleatoire(0, m-1);
-    } while (p[l][c] == 'R');
-    p[l][c] = 'R';
-
 }
 
 /**

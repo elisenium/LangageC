@@ -1,10 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include <string.h>
 #include <time.h>
+#include <string.h>
 
 #define TAILLE_PSEUDO 30
+
 
 // Déclaration des fonctions fournies
 void initPlateau(char** p, int n, int m, int nbRochers);
@@ -15,11 +16,13 @@ void afficherPlateau(char** p, int n, int m);
 char** creerPlateau(int n, int m);
 int nbRochers(char** p, int n, int m);
 void placerUnRocher(char** p, int n, int m);
-bool supprimerLigne(char*** p, int* n, int ligne);
 bool supprimerColonne(char*** p, int n, int *m, int colonne);
+bool supprimerLigne(char*** p, int* n, int ligne);
 
 
-// PROGRAMME PRINCIPAL
+//*********************//
+// PROGRAMME PRINCIPAL //
+//*********************//
 
 int main (int argc, char* argv[]) {
     // Vérification des arguments du programme
@@ -32,6 +35,7 @@ int main (int argc, char* argv[]) {
     int nl = atoi(argv[1]);
     int nc = atoi(argv[2]);
     
+    
     // Lecture du pseudonyme du joueur
     char pseudo[TAILLE_PSEUDO];
     printf("Entrez votre pseudo: ");
@@ -39,25 +43,29 @@ int main (int argc, char* argv[]) {
     pseudo[strlen(pseudo)-1] = '\0';
     
     // Création du plateau de jeu
+    // TODO (appeler creerPlateau)
     char** plateau = creerPlateau(nl, nc);
     if (plateau == NULL) {
-        printf("Erreur d'allocation mémoire\n");
-        exit(1);
+        perror("error");
+        exit(EXIT_FAILURE);
     }
     
-    // Initialisation du plateau en plaçant nl*nc/3-1 rochers aléatoires
+    // Initialisation du plateau en plaçant nl*nc/3-1 rochers aléatoires 'R'
     srand((unsigned) time(NULL));
-    int nR = nl*nc/3-1;
+    // TODO (appeler initPlateau)
+    int nR = (nl*nc)/3-1;
     initPlateau(plateau, nl, nc, nR);
         
     // Boucle de jeu
     int nB = 0;
-    int nDestruct = 0;
-    int l,c;
-    while (nR!=0 && nR<nl*nc && nl>2 && nc>2) {
-        // Placement d'un rocher aléatoire
+    int nDestructions = 0;
+    int l, c;
+    
+    while (nR != 0 && nR < nl*nc && nl > 2 && nc > 2) {
+        // Placement d'un rocher aléatoire 'R'
         printf("Ajout d'un rocher sur le plateau:\n");
-        placerUnRocher(plateau,nl,nc);
+        // (appeler placerUnRocher)
+        placerUnRocher(plateau, nl, nc);
         nR++;
         afficherPlateau(plateau, nl, nc);
 
@@ -65,36 +73,40 @@ int main (int argc, char* argv[]) {
         printf("Entrez les coordonnées de votre bombe: ");
         if (scanf("%d%d",&l,&c) == EOF)
             break;
+            
         l--; c--;
         if (plateau[l][c] == 'R') {
             printf("La case est occupée par un rocher\n");
             continue;
         }
         
-        // Placement de la bombe
+        // Placement de la bombe 'X'
         plateau[l][c] = 'X';
         afficherPlateau(plateau, nl, nc);
-        
+                
         // Explosion de la bombe
+        // (appeler supprimerLigne et supprimerColonne)
         if (!supprimerLigne(&plateau, &nl, l) || !supprimerColonne(&plateau, nl, &nc, c)) {
             printf("Erreur: suppression de ligne/colonne ko\n");
             exit(1);
         }
+        
         printf("Après explosion de la bombe:\n");
         afficherPlateau(plateau, nl, nc);
 
-        // Mise à jour des statistiques
+        // Màj des stats
         nB++;
-        nDestruct += nR;
+        nDestructions += nR;
         nR = nbRochers(plateau,nl,nc);
-        nDestruct -= nR;
+        nDestructions -= nR;
+        
     }
-    
-    // Libération des mémoires dynamiques
+
+    // Libération mémoire
     for (int i=0; i<nl; i++)
         free(plateau[i]);
     free(plateau);
-    
+       
     // Affichage des statistiques
     if (nR == 0)
         printf("\n\nBravo %s, tu as gagné !\n", pseudo);
@@ -102,8 +114,9 @@ int main (int argc, char* argv[]) {
         printf("\n\nPerdu!\n");
     
     printf("\nNombre de bombes placées: %d\n", nB);
-    printf("Nombre de rochers détruits: %d\n", nDestruct);
+    printf("Nombre de rochers détruits: %d\n", nDestructions);
     printf("Nombre de rochers restants: %d\n\n", nR);
+    
 }
 
 
@@ -113,22 +126,22 @@ int main (int argc, char* argv[]) {
 
 /**
  * PRE: n,m: entiers positifs
- * RES: renvoie un tableau de dimensions n x m où les éléments sont initialisés avec des espaces ; 
- *      NULL si une erreur s'est produite
- *      (Le tableau renvoyé est dynamique et devra être libéré)
+ * RES: renvoie un tableau de dimensions n x m où les éléments sont 
+ *      initialisés avec des espaces ; NULL si une erreur s'est produite
+ *      (le tableau renvoyé est dynamique et devra être libéré)
  */
 char** creerPlateau (int n, int m) {
-    char** p = malloc(n * sizeof(char*));
-    if (p == NULL)
-        return NULL;
-    
-    for (int i=0; i<n; i++) {
-        p[i] = malloc(m * sizeof(char));
-        if (p[i] == NULL)
-            return NULL;
-        
-        for (int j=0; j<m; j++)
+    // TODO
+    char** p = (char**)malloc(n*sizeof(char*));
+    if (p == NULL) return NULL;
+
+    for (int i = 0; i < n; i++) {
+        p[i] = (char*)malloc(m*sizeof(char));
+        if (p[i] == NULL) return NULL;
+
+        for (int j = 0; j < m; j++) {
             p[i][j] = ' ';
+        }
     }
     
     return p;
@@ -141,12 +154,16 @@ char** creerPlateau (int n, int m) {
  *      par un rocher 'R'
  */
 int nbRochers (char** p, int n, int m) {
-    int cnt = 0;
-    for (int l=0; l<n; l++)
-        for (int c=0; c<m; c++)
-            if (p[l][c] == 'R')
-                cnt++;
-    return cnt;
+    // TODO
+    int nbRochers = 0;
+    
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            if(p[i][j] == 'R')
+                nbRochers++;
+        }
+    }
+    return nbRochers;
 }
 
 /**
@@ -156,10 +173,12 @@ int nbRochers (char** p, int n, int m) {
  * POST: un rocher 'R' a été placé aléatoirement dans une case vide de p
  */
 void placerUnRocher (char** p, int n, int m) {
+    // TODO (utilisez la fonction fournie: entierAleatoire)
+
     int l,c;
     do {
-        l = entierAleatoire(0,n-1);
-        c = entierAleatoire(0,m-1);
+        l = entierAleatoire(0, n-1);
+        c = entierAleatoire(0, m-1);
     } while (p[l][c] == 'R');
     p[l][c] = 'R';
 }
@@ -184,13 +203,9 @@ bool supprimerLigne (char*** p, int* n, int ligne) {
     return *p != NULL;
 }
 
+
 /**
- * Supprime une colonne du plateau
- * PRE: p: plateau de dimensions n x m, t.q. m > 1
- *      colonne: indice de colonne t.q. 0 <= colonne < m
- * POST: la colonne d'indice colonne de p a été supprimée et m décrémenté de 1;
- *       p comporte m colonnes physiquement en mémoire (taille physique = taille logique)
- * RES: renvoie vrai si la taille physique du tableau a bien été modifiée; faux sinon
+ * TODO specs
  */
 bool supprimerColonne (char*** p, int n, int *m, int colonne) {
     (*m)--;
@@ -225,7 +240,7 @@ void initPlateau (char** p, int n, int m, int nbR) {
 
 /**
  * Génère une valeur entière aléatoire dans un intervalle
- * PRE: min, max: bornes de l'intervalle [min,max]
+ * PRE: min, max: valeurs entières t.q. min < max
  * RES: renvoie une valeur entière aléatoire dans l'intervalle [min,max]
  */
 int entierAleatoire (int min, int max) {
