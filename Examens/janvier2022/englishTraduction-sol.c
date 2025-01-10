@@ -1,79 +1,119 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 #include <time.h>
+#include <string.h>
+#include <stdbool.h>
 
 #define NB_CHAR 256
-#define MAX_PHRASES 100
+#define MAX_PHRASES 10
 
-int unEntierAuHasardEntre(int valMin, int valMax);
 
-typedef struct {
-    char english[NB_CHAR];
-    char french[NB_CHAR];
-} Translation;
+int unEntierAuHasardEntre (int valMin, int valMax);
 
-int main(int argc, char* argv[]) {
-    Translation translations[MAX_PHRASES];
-    int count = 0;
 
-    /***********************************/
-    /* PHASE 1: SAISIE DES TRADUCTIONS */
-    /***********************************/
+int main (int argc, char* argv[])
+{
+   /***********************************/
+   /* PHASE 1: SAISIE DES TRADUCTIONS */
+   /***********************************/
    
-    printf("Entrez des phrases en anglais suivies de leur traduction française,");
-    printf("à raison d'une phrase par ligne.\n");
-    printf("Chaque phrase comprend au plus %d caractères.\n", NB_CHAR-2);
-    printf("Entrez Ctrl-D (EOF) pour terminer la saisie.\n\n");
-    
-    while (count < MAX_PHRASES && fgets(translations[count].english, NB_CHAR, stdin) != NULL) {
-        // Enlever le saut de ligne à la fin de la phrase
-        translations[count].english[strcspn(translations[count].english, "\n")] = '\0';
-        
-        printf("Traduction: ");
-        if (fgets(translations[count].french, NB_CHAR, stdin) == NULL) break;
-        translations[count].french[strcspn(translations[count].french, "\n")] = '\0';
-        
-        count++;
-    }
-     
-    /**************************************/
-    /* PHASE 2: AFFICHAGE DES TRADUCTIONS */
-    /**************************************/
+   printf("Entrez des phrases en anglais suivies de leur traduction française,");
+   printf("à raison d'une phrase par ligne.\n");
+   printf("Chaque phrase comprend au plus %d caractères.\n", NB_CHAR-2);
+   printf("Entrez Ctrl-D (EOF) pour terminer la saisie.\n\n");
    
-    printf("\nTRADUCTIONS INTRODUITES:\n\n");
-    for (int i = 0; i < count; i++) {
-        printf("'%s' --> '%s'\n", translations[i].english, translations[i].french);
-    }
-   
-    /*************************/
-    /* PHASE 3: ENTRAINEMENT */
-    /*************************/
-   
-    printf("\nTRADUISEZ LA PHRASE SUIVANTE:\n\n");
-    freopen("/dev/tty", "rw", stdin);  // ne pas modifier! (permet de lire à nouveau sur stdin après EOF)
-    
-    srand((unsigned) time(NULL));  // Réinitialiser la graine du générateur de nombres aléatoires
-    
-    int randomIndex = unEntierAuHasardEntre(0, count - 1);
-    printf("%s\n", translations[randomIndex].english);
-    
-    char userTranslation[NB_CHAR];
-    do {
-        printf("Traduction: ");
-        fgets(userTranslation, NB_CHAR, stdin);
-        userTranslation[strcspn(userTranslation, "\n")] = '\0';
-        
-        if (strcmp(userTranslation, translations[randomIndex].french) == 0) {
-            printf("Correct!\n");
-            break;
-        } else {
-            printf("Faux. Réessayez!\n");
+   int nbMots = 0;
+
+   char** tabFR = (char**)malloc(MAX_PHRASES*sizeof(char*));
+   if (tabFR == NULL) return 0;
+
+   char** tabEN = (char**)malloc(MAX_PHRASES*sizeof(char*));
+   if (tabEN == NULL) return 0;
+
+   char buffer[NB_CHAR];
+
+   printf("Entrez la phrase en anglais puis sa traduction en français :\n");
+   while (fgets(buffer, NB_CHAR, stdin) != NULL) {
+        if (nbMots == MAX_PHRASES) {
+            tabFR = (char**)realloc(tabFR, (nbMots*2)*sizeof(char*));
+            tabEN = (char**)realloc(tabEN, (nbMots*2)*sizeof(char*));
         }
-    } while (1);
+
+        if (buffer[strlen(buffer)-1] == '\n') {
+            buffer[strlen(buffer)-1] = '\0';
+        }
+        
+        tabEN[nbMots] = (char*)malloc((strlen(buffer)+1)*sizeof(char));
+        if (tabEN[nbMots] == NULL) return 0;
+        strcpy(tabEN[nbMots], buffer);
+
+        if (fgets(buffer, NB_CHAR, stdin) == NULL) {
+            break;
+        }
+        
+        if (buffer[strlen(buffer)-1] == '\n') {
+            buffer[strlen(buffer)-1] = '\0';
+        }
+        
+        tabFR[nbMots] = (char*)malloc((strlen(buffer)+1)*sizeof(char));
+        if (tabFR[nbMots] == NULL) return 0;
+        strcpy(tabFR[nbMots], buffer);
+        
+        nbMots++;
+   }
    
-    return 0;
+   
+     
+   /**************************************/
+   /* PHASE 2: AFFICHAGE DES TRADUCTIONS */
+   /**************************************/
+   
+   printf("\nTRADUCTIONS INTRODUITES:\n\n");
+
+   for (int i = 0; i < nbMots; i++) {
+        printf("%s => %s\n", tabEN[i], tabFR[i]);
+   }
+   
+   
+   
+   /*************************/
+   /* PHASE 3: ENTRAINEMENT */
+   /*************************/
+   
+   printf("\nTRADUISEZ LA PHRASE SUIVANTE:\n\n");
+   freopen("/dev/tty", "rw", stdin);  /// ne pas modifier! (permet de lire à nouveau sur stdin après EOF)
+
+   int index = unEntierAuHasardEntre(0, nbMots-1);
+
+   printf("%s\n\n", tabEN[index]);
+
+   bool traduction = false;
+
+   while (!traduction) {
+       printf("Traduction : ");
+       fgets(buffer, NB_CHAR, stdin);
+       if (buffer[strlen(buffer)-1] == '\n') {
+            buffer[strlen(buffer)-1] = '\0';
+       }
+
+       if (strcmp(buffer, tabFR[index]) == 0) {
+            traduction = true;
+       } else {
+            printf("Faux. Réessayez!\n\n");
+       }
+   }
+
+   printf("Correct!\n");
+   
+   for (int i = 0; i < nbMots; i++) {
+        free(tabFR[i]);
+        free(tabEN[i]);
+   }
+   
+   free(tabFR);
+   free(tabEN);
 }
+
 
 /**
  * Génère une valeur entière aléatoire
@@ -81,7 +121,11 @@ int main(int argc, char* argv[]) {
  * RES: renvoie une valeur entière pseudo-aléatoire comprise 
  *      dans l'intervalle [valMin,valMax]
  **/
-int unEntierAuHasardEntre(int valMin, int valMax) {
-    // Initialisation de la 'random seed'
-    return valMin + rand() % (valMax - valMin + 1);
+int unEntierAuHasardEntre (int valMin, int valMax) {
+   // Initialisation de la 'random seed'
+   srand((unsigned) time(NULL));
+   
+   // Génération d'une valeur aléatoire
+   int nombre = valMin + (int)(rand()/(RAND_MAX+1.0)*(valMax-valMin+1));
+   return nombre;
 }
